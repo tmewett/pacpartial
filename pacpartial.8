@@ -1,0 +1,46 @@
+.TH pacpartial 8
+.SH NAME
+pacpartial \- intelligently install packages after a partial update
+.SH SYNOPSIS
+.B pacpartial
+[\fB\-cnv\fR] [\fB\-k \fIpackage\fR] \fIpackage\fR...
+.SH DESCRIPTION
+.B pacpartial
+allows you to install and upgrade packages on a partially-updated system (after \fBpacman \-Sy\fR).
+It analyses the dependency tree to find a minimum set of packages that must be updated for the specified program to function.
+.PP
+It also provides a more intelligent version-keeping scheme than
+.BR pacman (8)'s \ \-\-ignore
+option that can prompt the user as necessary.
+.SH OPTIONS
+See
+.B pacpartial --help
+for a description of options.
+.SH FILES
+.TP
+.I /etc/pacman.d/partial_keep
+A list of packages that should be version-kept, as if by using
+.BR \-k / \-\-keep \.
+.TP
+.I /etc/pacman.d/partial_always
+A list of packages that should always be updated if they are out-of-date.
+.SH EXAMPLES
+Refresh the databases and install a package:
+.PP
+.nf
+.RS
+pacman -Sy
+pacpartial package
+.RE
+.fi
+.PP
+Check which packages would need downloading:
+.PP
+.nf
+.RS
+checkupdates
+pacpartial -c package
+.RE
+.fi
+.SH BUGS
+Please report issues or requests on the Web at <https://github.com/tmewett/pacpartial>.
