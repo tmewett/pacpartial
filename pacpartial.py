@@ -86,8 +86,8 @@ def findmissing(pkgs, found=set(), visited=set()):
     missing = rel - (installed - stale) | always
     return findmissing(missing, found | missing, pkgs | visited)
 
-def install(pkgs):
-    conflicts = keep & pkgs
+def install(pkgs, others=set()):
+    conflicts = keep & (pkgs | others)
     if conflicts:
         print("The following kept packages must be updated to complete this operation:")
         print("\n".join(conflicts))
@@ -95,17 +95,17 @@ def install(pkgs):
 #        check_call(("pacman", "-Qu", *conflicts))
         print("NOTE: keeping could mean these packages or those that depend on them break.")
         choice = input("Continue? [yes/no/keep] ")
-        if choice == "keep": pkgs -= conflicts
+        if choice == "keep":
+            pkgs -= conflicts
+            others -= conflicts
         elif choice not in ("y", "Y", "yes", "YES"): return
     if args.dry_run:
-        print("\n".join(pkgs))
+        print("\n".join(pkgs | others))
         return
-    # Do explicits first to trigger pacman's provider chooser
-    exps = pkgs & explicit
-    if exps: check_call(("pacman", "-S", *exps))
-    # Only do installed asdeps because uninstalled ones will have been pulled in
-    deps = (pkgs & installed) - explicit
-    if deps: check_call(("pacman", "-S", "--asdeps", *deps))
+    # We can discard all uninstalled others because they will be pulled in.
+    # pacman -S updates packages maintaining their explicit/dep status.
+    pkgs |= others & stale
+    check_call(("pacman", "-S", "--needed", *pkgs))
 
 
 targets = set(args.package)
@@ -144,7 +144,7 @@ missing = findmissing(targets)
 #print(_reldict)
 if missing:
     print("Found. Starting update.")
-    install(missing)
+    install(targets, missing)
 else:
     print("None found. Starting install.")
     install(targets)
