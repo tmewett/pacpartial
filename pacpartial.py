@@ -19,7 +19,7 @@ parser.add_argument('-v', '--verbose', action='store_true', help="output in more
 parser.add_argument('-c', '--checkupdates', action='store_true', help="use checkupdates' default temporary database (implies -n)")
 parser.add_argument('-n', '--dry-run', action='store_true', help="simulate; don't install anything")
 parser.add_argument('-k', '--keep',
-    action='append', default=[], metavar="package", help="keep this package from being updated (can be specified multiple times)")
+    action='append', default=[], metavar="package", help="keep this package from being updated or installed (can be specified multiple times)")
 
 parser.add_argument('--version', action='version', version="%(prog)s 0.1")
 
