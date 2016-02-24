@@ -6,7 +6,7 @@ pacpartial \- intelligently install packages after a partial update
 [\fB\-cnv\fR] [\fB\-k \fIpackage\fR] \fIpackage\fR...
 .SH DESCRIPTION
 .B pacpartial
-allows you to install and upgrade packages on a partially-updated system (after \fBpacman \-Sy\fR).
+allows you to install and upgrade packages on a refreshed system (after \fBpacman \-Sy\fR).
 It analyses the dependency tree to find a minimum set of packages that must be updated for the specified program to function.
 .PP
 It also provides a more intelligent version-keeping scheme than
@@ -42,5 +42,11 @@ checkupdates
 pacpartial -c package
 .RE
 .fi
+.SH NOTES
+Installing normally via
+.B pacman \-S
+should not be done on an out-of-date system.
+
+This program is not meant to fully replace complete system upgrades, which ensure all packages are up-to-date with any bugfixes and security patches.
 .SH BUGS
 Please report issues or requests on the Web at <https://github.com/tmewett/pacpartial>.

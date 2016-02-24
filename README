@@ -1,6 +1,0 @@
-This program attempts to integrate newly installed or upgraded packages into an out-of-date system.
-Normally, you cannot install on a "refreshed" system, as packages may require newer versions of API/ABIs that are not present, leading to breakages.
-Using this program ensures that the relevant dependencies (and their deps, etc.) are updated too.
-
-Please note that this program is in its early stages, and it MAY still cause breakages.
-Only use this if you know how to recover a system or downgrade packages.
