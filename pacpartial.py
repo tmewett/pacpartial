@@ -6,8 +6,8 @@
 # but the old one will be used until depreciated.
 # Eventually this may use ctypes & libalpm,
 # or become a C program.
-from subprocess import DEVNULL, check_call, check_output
-from os import environ
+from subprocess import DEVNULL, check_output
+from os import environ, execvp
 from collections import defaultdict
 
 
@@ -105,7 +105,7 @@ def install(pkgs, others=set()):
     # We can discard all uninstalled others because they will be pulled in.
     # pacman -S updates packages maintaining their explicit/dep status.
     pkgs |= others & stale
-    check_call(("pacman", "-S", "--needed", *pkgs))
+    execvp("pacman", ("pacman", "-S", "--needed", *pkgs))
 
 
 targets = set(args.package)
