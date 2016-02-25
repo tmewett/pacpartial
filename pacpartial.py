@@ -87,6 +87,9 @@ def findmissing(pkgs, found=set(), visited=set()):
     return findmissing(missing, found | missing, pkgs | visited)
 
 def install(pkgs, others=set()):
+    if args.dry_run:
+        print("\n".join(pkgs | others))
+        return
     conflicts = keep & (pkgs | others)
     if conflicts:
         print("The following kept packages must be updated to complete this operation:")
@@ -98,9 +101,6 @@ def install(pkgs, others=set()):
             pkgs -= conflicts
             others -= conflicts
         elif choice not in ("y", "Y", "yes", "YES"): return
-    if args.dry_run:
-        print("\n".join(pkgs | others))
-        return
     # We can discard all uninstalled others because they will be pulled in.
     # pacman -S updates packages maintaining their explicit/dep status.
     pkgs |= others & stale
