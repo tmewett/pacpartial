@@ -74,7 +74,7 @@ def related(pkg):
 
 # This is the main tree-traversal algorithm, implemented recursively.
 # NOTE "missing" refers to uninstalled AND out-of-date packages.
-# NOTE found is a proper subset of visited.
+# NOTE found is a subset of visited.
 def findmissing(pkgs, found=set(), visited=set()):
     pkgs -= visited
     if not pkgs: return found
@@ -90,9 +90,8 @@ def install(pkgs, others=set()):
     conflicts = keep & (pkgs | others)
     if conflicts:
         print("The following kept packages must be updated to complete this operation:")
+        # TODO show version changes in this list
         print("\n".join(conflicts))
-        # TODO put this back in, honoring -c
-#        check_call(("pacman", "-Qu", *conflicts))
         print("NOTE: keeping could mean these packages or those that depend on them break.")
         choice = input("Continue? [yes/no/keep] ")
         if choice == "keep":
@@ -112,6 +111,7 @@ targets = set(args.package)
 keep = set(args.keep)
 installed = cmd2set("pacman", "-Qq")
 explicit = cmd2set("pacman", "-Qeq")
+# Read pacman name from environment, so wrappers can be used?
 
 if args.checkupdates:
     stale = cmd2set("pacman", "-Quq", "--dbpath", "/tmp/checkup-db-" + environ['LOGNAME'])
@@ -119,7 +119,7 @@ else:
     stale = cmd2set("pacman", "-Quq")
 
 # Some things just have to be done...
-#always = cmd2set() # maybe packages in base should be updated always?
+# Maybe all packages in base should always be updated? Are they implicit deps?
 always = {"archlinux-keyring"} & stale
 
 try:
@@ -141,8 +141,7 @@ if not stale:
 
 print("Finding missing & related packages...")
 missing = findmissing(targets)
-#print(_reldict)
-if missing:
+if missing & installed:
     print("Found. Starting update.")
     install(targets, missing)
 else:
