@@ -63,7 +63,11 @@ def related(pkg):
     if args.verbose: print("Finding related for %s..." % pkg)
 
     val = _reldict[pkg]
-    if not val[0]: _relupdate(command('pactree', '-sa', pkg), True)
+    if not val[0]:
+        try:
+            _relupdate(command('pactree', '-sa', pkg), True)
+        except:
+            print("Cannot find %s." % pkg)
     if not val[1]:
         try:
             _relupdate(command('pactree', '-ra', pkg), False)
