@@ -14,7 +14,7 @@ from collections import defaultdict
 from argparse import ArgumentParser
 parser = ArgumentParser(description="Intelligently upgrade or install specific packages on a partially-updated system")
 
-parser.add_argument('package', nargs='+')
+parser.add_argument('package', nargs='*')
 parser.add_argument('-v', '--verbose', action='store_true', help="output in more detail")
 parser.add_argument('-c', '--checkupdates', action='store_true', help="use checkupdates' default temporary database (implies -n)")
 parser.add_argument('-n', '--dry-run', action='store_true', help="simulate; don't install anything")
@@ -91,6 +91,9 @@ def findmissing(pkgs, found=set(), visited=set()):
     return findmissing(missing, found | missing, pkgs | visited)
 
 def install(pkgs, others=set()):
+    if not pkgs and not args.dry_run:
+        print("No packages selected!")
+        return
     if args.dry_run:
         print("\n".join(pkgs | others))
         return
