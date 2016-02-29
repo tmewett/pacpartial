@@ -33,9 +33,10 @@ def command(*cmd):
 def cmd2set(*cmd):
     return set(command(*cmd).splitlines())
 
-# Calls pactree and collects & processes the results into a database.
-# Database is a dict of {pkg: [dbit, rbit, related]} where the bits/bools determine
-# which "tree" (deps or reverse deps) has been done yet. rbit is implied as !dbit
+# Parses the results of a call to `pactree -a` into a database.
+# The database is a dict of {pkg: [dbit, rbit, related]} where the bits/bools determine
+# which "tree" (deps or reverse deps) has been updated yet.
+# rbit is implied as not dbit (and not given as an argument)
 # because, well, who would call a function to do nothing?
 # This is an over-the-top way of reducing the calls to pactree, which take a long time.
 _reldict = defaultdict(lambda: [False, False, set()])
@@ -59,6 +60,7 @@ def _relupdate(tree, dbit):
         lastname = name
         lastlev = level
 
+# Returns the set of packages related to (forward and reverse deps, depth 1) a given package
 def related(pkg):
     if args.verbose: print("Finding related for %s..." % pkg)
 
@@ -77,6 +79,9 @@ def related(pkg):
     return val[2]
 
 # This is the main tree-traversal algorithm, implemented recursively.
+# Given a set of packages, it traverses each dependency tree until it finds
+# a package with no "missing" dependencies. It then returns all the missing
+# packages it has found along the way.
 # NOTE "missing" refers to uninstalled AND out-of-date packages.
 # NOTE found is a subset of visited.
 def findmissing(pkgs, found=set(), visited=set()):
@@ -90,6 +95,7 @@ def findmissing(pkgs, found=set(), visited=set()):
     missing = rel - (installed - stale) | always
     return findmissing(missing, found | missing, pkgs | visited)
 
+# Does some checks and then installs/updates ALL pkgs and OUTDATED others.
 def install(pkgs, others=set()):
     if not pkgs and not args.dry_run:
         print("No packages selected!")
