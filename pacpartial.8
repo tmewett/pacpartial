@@ -3,7 +3,7 @@
 pacpartial \- intelligently install packages after a partial update
 .SH SYNOPSIS
 .B pacpartial
-[\fB\-cnv\fR] [\fB\-k \fIpackage\fR] \fIpackage\fR...
+[\fB\-Dcnv\fR] [\fB\-k \fIpackage\fR] [\fIpackage\fR...]
 .SH DESCRIPTION
 .B pacpartial
 allows you to install and upgrade packages on a refreshed system (after \fBpacman \-Sy\fR).
@@ -26,12 +26,12 @@ A list of packages that should be version-kept, as if by using
 A list of packages that should always be updated if they are out-of-date.
 In other words, append these packages to the command line.
 .SH EXAMPLES
-Refresh the databases and install a package:
+Refresh the databases and install a package, with some optional dependencies:
 .PP
 .nf
 .RS
 pacman -Sy
-pacpartial package
+pacpartial package -D opt1 opt2
 .RE
 .fi
 .PP

@@ -20,6 +20,8 @@ parser.add_argument('-c', '--checkupdates', action='store_true', help="use check
 parser.add_argument('-n', '--dry-run', action='store_true', help="simulate; don't install anything")
 parser.add_argument('-k', '--keep',
     action='append', default=[], metavar="package", help="keep this package from being updated or installed (can be specified multiple times)")
+parser.add_argument('-D', '--asdeps',
+    nargs='+', default=[], metavar="package", help="install all succeeding packages as dependenices")
 
 parser.add_argument('--version', action='version', version="%(prog)s 0.1")
 
