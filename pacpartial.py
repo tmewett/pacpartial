@@ -6,8 +6,8 @@
 # but the old one will be used until depreciated.
 # Eventually this may use ctypes & libalpm,
 # or become a C program.
-from subprocess import DEVNULL, check_output
-from os import environ, execvp
+from subprocess import DEVNULL, call, check_output
+from os import environ
 from collections import defaultdict
 
 
@@ -97,8 +97,10 @@ def findmissing(pkgs, found=set(), visited=set()):
     missing = rel - (installed - stale) | always
     return findmissing(missing, found | missing, pkgs | visited)
 
-# Does some checks and then installs/updates ALL pkgs and OUTDATED others.
+# Does some checks and then installs/updates ALL pkgs & asdeps and OUTDATED others.
+# Also marks packages given with -D as dependencies.
 def install(pkgs, others=set()):
+    pkgs |= asdeps
     if not pkgs and not args.dry_run:
         print("No packages selected!")
         return
@@ -119,13 +121,16 @@ def install(pkgs, others=set()):
     # We can discard all uninstalled others because they will be pulled in.
     # pacman -S updates packages maintaining their explicit/dep status.
     pkgs |= others & stale
-    execvp("pacman", ("pacman", "-S", "--needed", *pkgs))
+    call(("pacman", "-S", "--needed", *pkgs))
+    # only mark newly installed deps as such, to avoid screwing the user's database
+    newdeps = asdeps - installed
+    if newdeps: call(("pacman", "-D", "--asdeps", *newdeps), stdout=DEVNULL)
 
 
 targets = set(args.package)
 keep = set(args.keep)
+asdeps = set(args.asdeps)
 installed = cmd2set("pacman", "-Qq")
-explicit = cmd2set("pacman", "-Qeq")
 # Read pacman name from environment, so wrappers can be used?
 
 if args.checkupdates:
