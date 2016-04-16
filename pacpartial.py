@@ -21,7 +21,7 @@ parser.add_argument('-n', '--dry-run', action='store_true', help="simulate; don'
 parser.add_argument('-k', '--keep',
     action='append', default=[], metavar="package", help="keep this package from being updated or installed (can be specified multiple times)")
 parser.add_argument('-D', '--asdeps',
-    nargs='+', default=[], metavar="package", help="install all succeeding packages as dependenices")
+    nargs='+', default=[], metavar="package", help="install all succeeding packages as dependencies")
 
 parser.add_argument('--version', action='version', version="%(prog)s 0.1")
 

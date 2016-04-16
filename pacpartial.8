@@ -1,17 +1,15 @@
 .TH pacpartial 8
 .SH NAME
-pacpartial \- intelligently install packages after a partial update
+pacpartial \- intelligently install packages with pacman after a refresh
 .SH SYNOPSIS
 .B pacpartial
 [\fB\-cnv\fR] [\fB\-k \fIpackage\fR] [\fIpackage\fR...] [\fB\-D \fIpackage\fR...]
 .SH DESCRIPTION
 .B pacpartial
 allows you to install and upgrade packages on a refreshed system (after \fBpacman \-Sy\fR).
-It analyses the dependency tree to find a minimum set of packages that must be updated for the specified program to function.
+It analyses the dependency tree to find a minimum set of packages that must be updated, to avoid breaks related to version changes.
 .PP
-It also provides a more intelligent version-keeping scheme than
-.BR pacman (8)'s \ \-\-ignore
-option that can prompt the user as necessary.
+It also provides an interactive way to "keep" packages, preventing them from updating, useful for large or frequently-updated packages.
 .SH OPTIONS
 See
 .B pacpartial --help
@@ -46,8 +44,9 @@ pacpartial -c package
 .SH NOTES
 Installing normally via
 .B pacman \-S
-should not be done on an out-of-date system.
+should not be done on a refreshed system.
 
 This program is not meant to fully replace complete system upgrades, which ensure all packages are up-to-date with any bugfixes and security patches.
+It also does not guarantee that no breakages will occur, but simply avoids their most common causes.
 .SH BUGS
 Please report issues or requests on the Web at <https://github.com/tmewett/pacpartial>.
