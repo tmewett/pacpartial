@@ -15,6 +15,7 @@ from argparse import ArgumentParser
 parser = ArgumentParser(description="Intelligently upgrade or install specific packages on a partially-updated system")
 
 parser.add_argument('package', nargs='*')
+parser.add_argument('-A', '--all', action='store_true', help="update all packages (honours -k)")
 parser.add_argument('-v', '--verbose', action='store_true', help="output in more detail")
 parser.add_argument('-c', '--checkupdates', action='store_true', help="use checkupdates' default temporary database (implies -n)")
 parser.add_argument('-n', '--dry-run', action='store_true', help="simulate; don't install anything")
@@ -138,6 +139,7 @@ if args.checkupdates:
 else:
     stale = cmd2set("pacman", "-Quq")
 
+if args.all: targets |= stale
 # Some things just have to be done...
 # Maybe all packages in base should always be updated? Are they implicit deps?
 always = {"archlinux-keyring"} & stale
@@ -160,7 +162,8 @@ if not stale:
     install(targets)
 
 print("Finding missing & related packages...")
-missing = findmissing(targets)
+missing = set()
+if not args.all: missing = findmissing(targets)
 if missing & installed:
     print("Found. Starting update.")
     install(targets, missing)
