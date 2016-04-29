@@ -24,7 +24,7 @@ parser.add_argument('-k', '--keep',
 parser.add_argument('-D', '--asdeps',
     nargs='+', default=[], metavar="package", help="install all succeeding packages as dependencies")
 
-parser.add_argument('--version', action='version', version="%(prog)s 0.1")
+parser.add_argument('--version', action='version', version="%(prog)s 1.1")
 
 args = parser.parse_args()
 if args.checkupdates: args.dry_run = True
