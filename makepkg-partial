@@ -1,0 +1,7 @@
+#!/bin/bash -e
+[ -f PKGBUILD ] || exit
+. PKGBUILD
+pkgs="${depends[@]} ${makedepends[@]}"
+echo $pkgs
+sudo pacpartial -D $pkgs
+exec makepkg "$@"

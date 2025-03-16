@@ -1,0 +1,19 @@
+.TH makepkg-partial 8
+.SH NAME
+makepkg-partial \- build a package, using pacpartial to satisfy dependencies
+.SH SYNOPSIS
+.B makepkg-partial
+[\fIoptions\fR...]
+.SH DESCRIPTION
+.B makepkg-partial
+is a wrapper for
+.BR makepkg (8)
+that uses
+.BR pacpartial (8)
+to install run-time and build-time dependencies.
+It must be run in a directory with a PKGBUILD file present.
+.SH OPTIONS
+No options are interpretted - any ones given are passed to
+.B makepkg
+.SH BUGS
+This program is part of pacpartial - please report issues or requests on the Web at <https://github.com/tmewett/pacpartial>.
